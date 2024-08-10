@@ -130,12 +130,17 @@ def autosendmessage(group_id, testgroup_id):
 
     message = "今日比赛:\n"
     flag = 0
+    error = 0
 
     # 调用 codeforces 的函数拼接今日的cf比赛信息
     message_temp = message_codeforces_daily()
-    if message_temp != "NULL":
-        flag += 1
-        message += "\n" + message_temp
+    if "ERROR" in message_temp:
+        error = 1
+        message += "CF比赛无法获取\n"+message_temp
+    else:
+        if message_temp != "NULL":
+            flag += 1
+            message += "\n" + message_temp
 
     # 调用 atcoder 的函数拼接今日的at比赛信息
     message_temp = message_atcoder_daily()
@@ -153,9 +158,13 @@ def autosendmessage(group_id, testgroup_id):
     if flag != 0:
         sendGroupMessage(group_id, message)
     else:
-        message = "今日无比赛，近日的CF比赛如下：\n\n"
-        message += message_codeforces_all()
-        sendGroupMessage(testgroup_id, message)
+        if error:
+            message = "CF比赛信息无法获取\n" + message_codeforces_all() + "\n"
+            sendGroupMessage(testgroup_id, message)
+        else:
+            message = "今日无比赛，近日的CF比赛如下：\n\n"
+            message += message_codeforces_all()
+            sendGroupMessage(testgroup_id, message)
 
     # 释放文件锁
     f.close()

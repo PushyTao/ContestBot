@@ -7,6 +7,7 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util import Retry
 
 import DB
+import methods
 
 url_cf = "http://codeforces.com/api"
 RES = requests.session()
@@ -41,9 +42,13 @@ def get_codeforces_contests():
     type:比赛类型，status:比赛状态，relative_time: ，id:比赛的id用于拼接比赛地址}
     """
     response = RES.get(url=url_cf + "/contest.list")
+    cnt = 0
     while response.status_code != 200:
         response = RES.get(url=url_cf + "/contest.list")
         time.sleep(0.3)
+        cnt += 1
+        if cnt > 10:
+            return 'ERROR:' + str(response.status_code)
     res = response.json().get("result")
     contests = []
     for i in res:
@@ -91,6 +96,8 @@ def message_codeforces_daily():
     # contests = cfdeldiv1(contests)
     if len(contests) == 0:
         return "NULL"
+    if "ERROR" in contests:
+        return contests
     flag = False
     for i in contests[::-1]:
         timet = i['begin_time'].split()
@@ -116,6 +123,8 @@ def message_codeforces_all():
     if len(contests) == 0:
         message += "[空空如也]\t\t\n\n"
         return message
+    if "ERROR" in contests:
+        return contests
     for i in contests[::-1]:
         message += message_formate(i)
         message += "\n"

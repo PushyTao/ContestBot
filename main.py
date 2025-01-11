@@ -19,6 +19,9 @@ def post_data():
         autotestnumber = numbers['monitorGroupNumber']
         autosendmessage(autonumber, autotestnumber)
 
+    if timenow == settingConfig.settingNumber()['autoGetTime']:
+        autoGetContest();
+
     if request.get_json().get("message_type") == "private":  # 如果是私聊信息
         uid = request.get_json().get('sender').get('user_id')  # 获取信息发送者的 QQ号码
         nickname = request.get_json().get("sender").get("nickname")
@@ -40,6 +43,8 @@ if __name__ == '__main__':
     # 先将文件锁删除，确保之前没有锁
     if os.path.exists('./automessage.lock'):
         os.remove('./automessage.lock')
+    if os.path.exists('./autoget.lock'):
+        os.remove('./autoget.lock')
     post = settingConfig.settingPost()
     host_data = post['host']
     port_data = post['port']

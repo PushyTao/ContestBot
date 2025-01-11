@@ -1,4 +1,6 @@
 import os
+
+import contestDBoperate
 from atcoder import *
 from newcoder import *
 from codeforces import *
@@ -79,13 +81,13 @@ def privateMessageJudgement(message, uid, nickname):
     :return: null，打印这条信息并发送相应比赛信息
     """
     if message == "atcoder -c" or message == "at -c":
-        print(uid, nickname, message)
+        # print(uid, nickname, message)
         sendPrivateContest('at', uid)
     if message == "nowcoder -c" or message == "nk -c":
-        print(uid, nickname, message)
+        # print(uid, nickname, message)
         sendPrivateContest('nk', uid)
     if message == "cf -c" or message == "cf contests":
-        print(uid, nickname, message)
+        # print(uid, nickname, message)
         sendPrivateContest('cf', uid)
 
 
@@ -102,13 +104,13 @@ def groupMessageJudgement(message, group_id, uid, nickname, qqnumber):
     if "[CQ:at,qq=" + qqnumber + "]" not in message:
         return
     if "atcoder -c" in message or "at -c" in message:
-        print(uid, nickname, message)
+        # print(uid, nickname, message)
         sendGroupContest('at', group_id)
     if "nowcoder -c" in message or "nk -c" in message:
-        print(uid, nickname, message)
+        # print(uid, nickname, message)
         sendGroupContest('nk', group_id)
     if "cf -c" in message or "cf contests" in message:
-        print(uid, nickname, message)
+        # print(uid, nickname, message)
         sendGroupContest('cf', group_id)
 
 
@@ -169,3 +171,17 @@ def autosendmessage(group_id, testgroup_id):
     # 释放文件锁
     f.close()
     os.remove('./automessage.lock')
+
+def autoGetContest():
+    if os.path.exists('./autoget.lock'):
+        return
+    f = open('autoget.lock', 'w')
+    f.write("autoget")
+    time.sleep(61)
+
+    contestDBoperate.codeforce_daliy_DB()
+    contestDBoperate.atcodert_daliy_DB()
+    contestDBoperate.newcoder_daliy_DB()
+
+    f.close()
+    os.remove('./autoget.lock')

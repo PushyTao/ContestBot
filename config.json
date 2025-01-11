@@ -1,9 +1,10 @@
 {
   "userNumber": {
-    "user": "169961689",
-    "sendGroupNumber": "735611423",
-    "monitorGroupNumber": "278992938",
-    "autoSendTime": "06:59"
+    "user": "3392562158",
+    "sendGroupNumber": "722401553",
+    "monitorGroupNumber": "949525561",
+    "autoSendTime": "17:01",
+    "autoGetTime": "16:59"
   },
   "POST": {
     "host": "127.0.0.1",
@@ -14,7 +15,7 @@
     "user": "root",
     "passwd": "1234",
     "port": "3306",
-    "db": "cfbot",
+    "db": "ldu_acm_manage",
     "charset": "utf8"
   }
 }

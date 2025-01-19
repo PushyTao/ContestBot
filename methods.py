@@ -101,17 +101,28 @@ def groupMessageJudgement(message, group_id, uid, nickname, qqnumber):
     :param qqnumber: 本机号码，用于@识别防误触的
     :return: null，打印这条消息，发送比赛信息
     """
+    flag = True
     if "[CQ:at,qq=" + qqnumber + "]" not in message:
         return
     if "atcoder -c" in message or "at -c" in message:
         # print(uid, nickname, message)
         sendGroupContest('at', group_id)
+        flag = False
     if "nowcoder -c" in message or "nk -c" in message:
         # print(uid, nickname, message)
         sendGroupContest('nk', group_id)
+        flag = False
     if "cf -c" in message or "cf contests" in message:
         # print(uid, nickname, message)
         sendGroupContest('cf', group_id)
+        flag = False
+    if flag:
+        if 'cf-' in message or 'cf -' in message:
+            sendGroupContest('cf', group_id)
+        if 'at-' in message or 'at -' in message:
+            sendGroupContest('at', group_id)
+        if 'nk-' in message or 'nk -' in message:
+            sendGroupContest('nk', group_id)
 
 
 def autosendmessage(group_id, testgroup_id):
@@ -138,7 +149,7 @@ def autosendmessage(group_id, testgroup_id):
     message_temp = message_codeforces_daily()
     if "ERROR" in message_temp:
         error = 1
-        message += "CF比赛无法获取\n"+message_temp
+        message += "CF比赛无法获取\n" + message_temp
     else:
         if message_temp != "NULL":
             flag += 1
@@ -171,6 +182,7 @@ def autosendmessage(group_id, testgroup_id):
     # 释放文件锁
     f.close()
     os.remove('./automessage.lock')
+
 
 def autoGetContest():
     if os.path.exists('./autoget.lock'):

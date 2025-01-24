@@ -1,4 +1,4 @@
-create table ldu_acm_manage.contest
+create table contest
 (
     id          varchar(30)  not null
         primary key,

@@ -5,7 +5,7 @@ import methods
 import newcoder
 
 
-def contest_update(id,name,starttime,endtime,platform,link):
+def contest_update(id, name, starttime, endtime, platform, link):
     """
     如果比赛已经存在就对其信息进行修改，确保信息最新
     如果比赛不存在就将比赛插入到数据库中
@@ -26,16 +26,17 @@ def contest_update(id,name,starttime,endtime,platform,link):
         return
     if len(selectData) == 0:
         insertContestSql = "insert into contest(id,platform,contestname,starttime,endtime,link,count,teamcontest,deleted)" + \
-                           "values('" + id + "','"+platform+"','" + name + \
+                           "values('" + id + "','" + platform + "','" + name + \
                            "','" + starttime + "','" + endtime + \
-                           "','"+link + "','-1','0','0')"
+                           "','" + link + "','-1','0','0')"
         DB.sqloperate(insertContestSql)
     else:
         updateContestSql = "update contest set contestname='" + name + "'," + \
                            "starttime='" + starttime + "'," + \
-                           "endtime='" + endtime + "'" + " where id='" +id + "'"
+                           "endtime='" + endtime + "'" + " where id='" + id + "'"
         print(updateContestSql)
         DB.sqloperate(updateContestSql)
+
 
 def codeforce_daliy_DB():
     """
@@ -46,7 +47,9 @@ def codeforce_daliy_DB():
     """
     codeforcescontest = codeforces.get_codeforces_contests()
     for contest in codeforcescontest:
-        contest_update(contest["id"],contest['name'],contest['begin_time'],contest['end_time'],'cf',contest["link"])
+        contest_update(contest['id'], contest['name'], contest['begin_time'], contest['end_time'], 'cf',
+                       contest['link'])
+
 
 def atcodert_daliy_DB():
     """
@@ -58,7 +61,8 @@ def atcodert_daliy_DB():
     atcodercontest = atcoder.get_atcoder_contests()
     for contest in atcodercontest:
         contest_time = list(map(str, contest['contest_time']))
-        contest_update(contest["id"],contest["name"],contest_time[0],contest_time[1],'at',contest["link"])
+        contest_update(contest['id'], contest['name'], contest_time[0], contest_time[1], 'at', contest['link'])
+
 
 def newcoder_daliy_DB():
     """
@@ -70,18 +74,19 @@ def newcoder_daliy_DB():
     newcodercontest = newcoder.get_nowcoder_contests()
     for contest in newcodercontest:
         contest_time = list(map(str, contest['contest_time']))
-        contest_update(contest['id'],contest['name'],contest_time[0],contest_time[1],'nk',contest['link'])
+        contest_update(contest['id'], contest['name'], contest_time[0], contest_time[1], 'nk', contest['link'])
+
 
 def select_contest(platform):
-    selectcontestsql = "select * from contest where platform='"+platform+"' order by starttime asc"
+    selectcontestsql = "select * from contest where platform='" + platform + "' order by starttime asc"
     selectData = DB.sqlselect(selectcontestsql)
     contestData = []
     for contest in selectData:
         if contest[8] == 0 and contest[7] == 0:
             contestData.append({
-                'name':contest[2],
-                'starttime':contest[3],
-                'endtime':contest[4],
-                'link':contest[5]
+                'name': contest[2],
+                'starttime': contest[3],
+                'endtime': contest[4],
+                'link': contest[5]
             })
     return contestData

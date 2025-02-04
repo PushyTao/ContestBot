@@ -3,19 +3,19 @@
     "user": "3392562158",
     "sendGroupNumber": "722401553",
     "monitorGroupNumber": "949525561",
-    "autoSendTime": "17:01",
-    "autoGetTime": "16:59"
+    "autoSendTime": "13:07",
+    "autoGetTime": "21:24"
   },
   "POST": {
     "host": "127.0.0.1",
     "port": "5705"
   },
   "SQLINFO": {
-    "host": "127.0.0.1",
-    "user": "root",
-    "passwd": "1234",
+    "host": "182.92.132.85",
+    "user": "test",
+    "passwd": "@LDUacm2019",
     "port": "3306",
     "db": "ldu_acm_manage",
-    "charset": "utf8"
+    "charset": "utf8mb4"
   }
 }

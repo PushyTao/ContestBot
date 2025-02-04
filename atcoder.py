@@ -11,9 +11,11 @@ def get_atcoder_contests():
     爬取atcoder的比赛
     :return: 返回[{name:, link:, contest_time:}]
     """
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36 Edg/132.0.0.0'}
     global data
     try:
-        data = httpx.get("https://atcoder.jp/contests", timeout=5)
+        data = httpx.get("https://atcoder.jp/contests", headers=headers, timeout=5)
     except HTTPError as e:
         print(f'获取atcoder比赛失败 http_code={e}')
         return []

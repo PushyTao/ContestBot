@@ -192,7 +192,7 @@ def autoGetContest():
     time.sleep(61)
 
     contestDBoperate.codeforce_daliy_DB()
-    contestDBoperate.atcodert_daliy_DB()
+    # contestDBoperate.atcodert_daliy_DB()
     contestDBoperate.newcoder_daliy_DB()
 
     f.close()

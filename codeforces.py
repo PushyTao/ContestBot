@@ -7,7 +7,9 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util import Retry
 
 import DB
+import contestDBoperate
 import methods
+import util
 
 url_cf = "http://codeforces.com/api"
 RES = requests.session()
@@ -62,27 +64,11 @@ def get_codeforces_contests():
             "type": i.get("type"),
             "status": i.get("phase"),
             "relative_time": i.get("relativeTimeSeconds"),
-            "id": i.get("id"),
+            "id": "cf_" + str(i.get("id")),
+            "link": "https://codeforces.com/contestRegistration/" + str(i.get("id"))
         }
-        reset = abs(i.get("relativeTimeSeconds"))
-        if reset > 7 * 24 * 60 * 60:
-            continue
         contests.append(contest)
     return contests
-
-
-def message_formate(contest):
-    """
-    一条比赛信息的拼接格式
-    :param contest: 比赛的一个字典
-    :return: 格式化好的 message
-    """
-    message = " 	比赛名称 : " + contest["name"] + "     \n" \
-              + " 	比赛链接 : https://codeforces.com/contestRegistration/" + str(contest["id"]) + "     \t\n" \
-              + " 	开始时间 : " + contest["begin_time"] + "     \t\n" \
-              + " 	结束时间 : " + contest["end_time"] + "     \t\n" \
-              + " 	比赛类型 : " + contest["type"] + "     \t\n"
-    return message
 
 
 def message_codeforces_daily():
@@ -90,27 +76,7 @@ def message_codeforces_daily():
     拼接 今日codeforces 的比赛信息
     :return: 如果返回 拼接好的 message，如果没有 返回 NULL
     """
-    todaydate = datetime.now().strftime('%Y-%m-%d')
-    message = "codeforces:\n"
-    contests = get_codeforces_contests()
-    # contests = cfdeldiv1(contests)
-    if len(contests) == 0:
-        return "NULL"
-    if "ERROR" in contests:
-        return contests
-    flag = False
-    for i in contests[::-1]:
-        timet = i['begin_time'].split()
-        if timet[0] != todaydate:
-            continue
-        if i["status"] != "BEFORE":
-            continue
-        flag = True
-        message += message_formate(i) + "\n"
-    if flag:
-        return message
-    else:
-        return "NULL"
+    return util.message_codeforces_daily('cf', 'Codeforces')
 
 
 def message_codeforces_all():
@@ -118,24 +84,7 @@ def message_codeforces_all():
     拼接所有的 codeforces 的比赛信息
     :return: 拼接好的 message
     """
-    contests = get_codeforces_contests()
-    message = "《Codeforces 比赛日历》\n "
-    if len(contests) == 0:
-        message += "[空空如也]\t\t\n\n"
-        return message
-    if "ERROR" in contests:
-        return contests
-    for i in contests[::-1]:
-        message += message_formate(i)
-        message += "\n"
-        # if i["status"] != "BEFORE":
-        #     message += " 	比赛状态 : 进行中...\t\n\n"
-        # else:
-        #     message += " 	比赛状态 : 未开始，距开始剩余 " + datetime.strftime(abs(i["relative_time"]), '%H:%M:%S') + "\t\n\n"
-    now_time = datetime.now()
-    now_time = datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S')
-    message = message + "更新时间 : " + now_time
-    return message
+    return util.message_codeforces_all('cf', 'Codeforces')
 
 
 def getRating(use_id):

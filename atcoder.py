@@ -3,15 +3,19 @@ from bs4 import BeautifulSoup
 from httpx import HTTPError
 from datetime import datetime, timedelta
 
+import util
+
 
 def get_atcoder_contests():
     """
     爬取atcoder的比赛
     :return: 返回[{name:, link:, contest_time:}]
     """
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36 Edg/132.0.0.0'}
     global data
     try:
-        data = httpx.get("https://atcoder.jp/contests", timeout=5)
+        data = httpx.get("https://atcoder.jp/contests", headers=headers, timeout=5)
     except HTTPError as e:
         print(f'获取atcoder比赛失败 http_code={e}')
         return []
@@ -33,8 +37,10 @@ def get_atcoder_contests():
         # length
         hour, minute = map(int, k[2].string.split(':'))
         end_time = begin_time + timedelta(hours=hour, minutes=minute)
+        _id = k[1].a['href'].split('/')
 
         contest.append({
+            'id': "at_" + _id[len(_id) - 1],
             'name': name,
             'link': link,
             'contest_time': (begin_time, end_time)
@@ -42,42 +48,13 @@ def get_atcoder_contests():
 
     return contest
 
-def message_formate(contest):
-    """
-    一条比赛信息的拼接格式
-    :param contest: 比赛的一个字典
-    :return: 格式化好的 message
-    """
-    contest_time = list(map(str, contest['contest_time']))
-    message = " 	比赛名称 : " + contest['name'] + "     \n" \
-               + " 	比赛链接： " + contest['link'] + "     \t\n" \
-               + " 	开始时间 : " + contest_time[0] + "     \t\n" \
-               + " 	结束时间 : " + contest_time[1] + "     \t\n\n"
-    return message
 
 def message_atcoder_daily():
     """
     拼接 今日atcoder 的比赛信息
     :return: 如果返回 拼接好的 message，如果没有 返回 NULL
     """
-    contests = get_atcoder_contests()
-    todaydate = datetime.now().strftime('%Y-%m-%d')
-
-    message = "Atcoder:\n"
-    if len(contests) == 0:
-        return "NULL"
-    flag = False
-    for x in contests:
-        contest_time = list(map(str, x['contest_time']))
-        timet = contest_time[0].split()
-        if timet[0] != todaydate:
-            continue
-        flag = True
-        message += message_formate(x)
-    if flag:
-        return message
-    else:
-        return "NULL"
+    return util.message_codeforces_daily('at', 'Atcoder')
 
 
 def message_atcoder_all():
@@ -85,14 +62,4 @@ def message_atcoder_all():
     拼接所有的atcoder的比赛信息
     :return: 拼接好的 message
     """
-    contests = get_atcoder_contests()
-    message = "《Atcoder比赛日历》\n"
-    if len(contests) == 0:
-        message += "[空空如也]\t\t\n\n"
-        return message
-    for x in contests:
-        message += message_formate(x)
-    now_time = datetime.now()
-    now_time = datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S')
-    message = message + "更新时间 : " + now_time
-    return message
+    return util.message_codeforces_all('at', 'Atcoder')
